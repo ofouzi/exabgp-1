@@ -31,10 +31,11 @@ while True:
 		log.flush()
 		
 		# Set debug point
-		pydevd.settrace()
+		#pydevd.settrace()
 		
 		bgp_message = json.loads(line)
 		
+		ip = ''
 		as_path = ''
 		route = ''
 		next_hop = ''
@@ -42,24 +43,41 @@ while True:
 		for k,v in bgp_message.iteritems():
 			if (k=='neighbor'):
 				for k1,v1 in v.iteritems():
+					if (k1=='ip'):
+						ip = v1
+					
 					if (k1=='update'):
-						for k2,v2 in v1['attribute'].iteritems():
-							if (k2=='as-path'):
-								for v3 in v2:
-									as_path += ' '.join([str(x) for x in v3])				
+						if ('attribute' in v1):
+							for k2,v2 in v1['attribute'].iteritems():
+								if (k2=='as-path'):
+									for v3 in v2:
+										as_path += ' '.join([str(x) for x in v3])				
 						
-						for k4,v4 in v1['announce'].iteritems():
-							if (k4=='ipv4 unicast'):
-								for k5,v5 in v4.iteritems():
-									route = k5
-									next_hop = v5['next-hop']
+						if ('announce' in v1):
+							for k2,v2 in v1['announce'].iteritems():
+								if (k2=='ipv4 unicast'):
+									for k3,v3 in v2.iteritems():
+										route = k3
+										next_hop = v3['next-hop']
 									
-									log.write('announce route %s next-hop %s as-path [ %s ]' % (route,next_hop,as_path))
-									log.write('\n')
-									log.flush()
+										log.write('announce route %s next-hop %s as-path [ %s ]' % (route,next_hop,as_path))
+										log.write('\n')
+										log.flush()
 									
-									write('announce route %s next-hop %s as-path [ %s ]' % (route,next_hop,as_path))
-			
+										write('announce route %s next-hop %s as-path [ %s ]' % (route,next_hop,as_path))
+						
+						if ('withdraw' in v1):
+							for k2,v2 in v1['withdraw'].iteritems():
+								if (k2=='ipv4 unicast'):
+									for k3,v3 in v2.iteritems():
+										route = k3
+									
+										log.write('withdraw route %s next-hop %s' % (route,ip))
+										log.write('\n')
+										log.flush()
+									
+										write('withdraw route %s next-hop %s' % (route,ip))
+		
 		#write('announce route %s next-hop %s as-path [ %s ]' % ('100.0.0.0/16','172.0.0.1','100')) 
 		#write('announce route %s next-hop %s as-path [ %s ]' % ('110.0.0.0/16','172.0.0.1','100')) 
 		#write('announce route %s next-hop %s as-path [ %s ]' % ('120.0.0.0/16','172.0.0.11','200')) 
