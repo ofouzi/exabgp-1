@@ -1,10 +1,10 @@
 #!/usr/bin/env python
+#  Author:
+#  Muhammad Shahbaz (muhammad.shahbaz@gatech.edu)
 
 import sys
 sys.path.append(r'/usr/lib/eclipse/plugins/org.python.pydev_3.0.0.201311051910/pysrc')
 sys.path.append(r'~/exabgp/etc/exabgp/rs')
-#  Author:
-#  Muhammad Shahbaz (muhammad.shahbaz@gatech.edu)
 
 import pydevd
 import json
