@@ -11,6 +11,9 @@ import sys
 import syslog
 import argparse
 
+sys.path.append(r'/usr/lib/eclipse/plugins/org.python.pydev_3.0.0.201311051910/pysrc')
+import pydevd
+
 from exabgp.version import version
 # import before the fork to improve copy on write memory savings
 from exabgp.reactor import Reactor
@@ -36,6 +39,9 @@ def __exit(memory,code):
 
 
 def main ():
+	# Set debug point ...
+	pydevd.settrace()
+	
 	main = int(sys.version[0])
 	secondary = int(sys.version[2])
 
@@ -421,6 +427,9 @@ def run (env,comment,configuration,pid=0):
 
 	if comment:
 		logger.configuration(comment)
+
+	# Set debug point ...
+	pydevd.settrace()
 
 	if not env.profile.enable:
 		Reactor(configuration).run()

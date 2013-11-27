@@ -12,6 +12,9 @@ import time
 import signal
 import select
 
+sys.path.append(r'/usr/lib/eclipse/plugins/org.python.pydev_3.0.0.201311051910/pysrc')
+import pydevd
+
 from exabgp.version import version
 
 from exabgp.reactor.daemon import Daemon
@@ -124,20 +127,35 @@ class Reactor (object):
 					start = time.time()
 
 					if self._shutdown:
+						# Set debug point ...
+						pydevd.settrace()
+						
 						self._shutdown = False
 						self.shutdown()
 					elif self._reload and reload_completed:
+						# Set debug point ...
+						pydevd.settrace()
+						
 						self._reload = False
 						self.reload(self._reload_processes)
 						self._reload_processes = False
 					elif self._restart:
+						# Set debug point ...
+						pydevd.settrace()
+						
 						self._restart = False
 						self.restart()
 					elif self._route_update:
+						# Set debug point ...
+						pydevd.settrace()
+	
 						self._route_update = False
 						self.route_update()
 
 					while self.schedule(self.processes.received()) or self._pending:
+						# Set debug point ...
+						pydevd.settrace()
+						
 						self._pending = list(self.run_pending(self._pending))
 
 						duration = time.time() - start
@@ -186,6 +204,9 @@ class Reactor (object):
 							break
 
 					if self.listener:
+						# Set debug point ...
+						pydevd.settrace()
+						
 						for connection in self.listener.connected():
 							# found
 							# * False, not peer found for this TCP connection

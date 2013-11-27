@@ -5,6 +5,9 @@ store.py
 Created by Thomas Mangin on 2009-11-05.
 Copyright (c) 2009-2013 Exa Networks. All rights reserved.
 """
+import sys
+sys.path.append(r'/usr/lib/eclipse/plugins/org.python.pydev_3.0.0.201311051910/pysrc')
+import pydevd
 
 from exabgp.bgp.message.direction import IN,OUT
 from exabgp.bgp.message.update import Update
@@ -112,6 +115,9 @@ class Store (object):
 				self._watchdog[watchdog]['+'].pop(change.nlri.index())
 
 	def insert_received (self,change):
+		# Set debug point ...
+		pydevd.settrace()
+		
 		if not self.cache:
 			return
 		elif change.nlri.action == IN.announced:
@@ -120,6 +126,9 @@ class Store (object):
 			self._announced.pop(change.nlri.index(),None)
 
 	def insert_announced (self,change,force=False):
+		# Set debug point ...
+		pydevd.settrace()
+		
 		# WARNING : this function can run while we are in the updates() loop
 
 		# self._announced[family][nlri-index] = change
